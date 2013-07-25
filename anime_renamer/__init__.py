@@ -30,11 +30,8 @@ def extract_first(regex, string):
 
 def filter_out(string, * matchers):
   result = string
-  print string
   for matcher in matchers:
-    print "applying ", matcher
     result = re.sub(matcher, "", result)
-    print result
 
   if result == string:
     return None
