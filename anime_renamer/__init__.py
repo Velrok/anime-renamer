@@ -72,5 +72,5 @@ def rename(filepath, dest_folder):
   dest_filename = filename_from_metadata(extract_meta_data(filepath))
   dest_path = os.path.join(dest_folder, dest_filename)
   print "{} -> {}".format(filepath, dest_path)
-  #os.rename(filepath, dest_path)
+  os.rename(filepath, dest_path)
 
