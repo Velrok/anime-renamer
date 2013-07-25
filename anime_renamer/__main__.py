@@ -16,6 +16,7 @@ from anime_renamer import rename
 if __name__ == "__main__":
   args = docopt(__doc__)
   try:
-    rename(args['<input_file>'], args['<dest_folder>'])
+    rename(args['<input_file>'],
+           args['<dest_folder>'])
   except RuntimeError as e:
     print "RuntimeError:", e

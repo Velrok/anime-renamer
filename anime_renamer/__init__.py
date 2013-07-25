@@ -1,6 +1,8 @@
 import os.path
 import os
 import re
+import shutil
+from sh import mv, ErrorReturnCode
 
 class RuntimeError(Exception):
   pass
@@ -34,7 +36,7 @@ def extract_meta_data(filepath):
   if extension is None:
     raise RuntimeError("Can't find file extension for filename: {}".format(filename))
 
-  episode_pattern = "_E?(\d+)_"
+  episode_pattern = "_E?(\d+)"
   episode = extract_first(episode_pattern, filename)
   if episode is None:
     raise RuntimeError("Can't find episode number in filename: {}".format(filename))
@@ -66,11 +68,22 @@ def rename(filepath, dest_folder):
   if dest_folder and (not os.path.exists(dest_folder)):
     raise RuntimeError("destination folder {} does not exist".format(dest_folder))
 
+  filepath = os.path.abspath(filepath)
+
   if dest_folder is None:
     dest_folder = os.path.dirname(filepath)
 
   dest_filename = filename_from_metadata(extract_meta_data(filepath))
+  try:
+    os.makedirs(os.path.dirname(os.path.join(dest_folder, dest_filename)))
+  except OSError:
+    print "Can't create destination path: {}. It may already exist.".format(dest_folder)
+    pass
   dest_path = os.path.join(dest_folder, dest_filename)
   print "{} -> {}".format(filepath, dest_path)
-  os.rename(filepath, dest_path)
+  try:
+    mv(filepath, dest_path)
+  except ErrorReturnCode as e:
+    print "command:\t", e.full_cmd
+    print "error:\t", e.stderr
 
