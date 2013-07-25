@@ -7,5 +7,5 @@ setup(name='anime-renamer',
       author='Velrok',
       author_email='waldemar.schwan@gmail.com',
       license='MIT',
-      packages=['anime-renamer'],
+      packages=['anime_renamer'],
       zip_safe=False)

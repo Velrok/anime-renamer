@@ -16,3 +16,11 @@ def test_meta_data_extraction():
                         'extension': "mkv"}
   eq_(bebop_expectation,
       extract_meta_data(bebop_example))
+
+def test_filename_from_metadata():
+  expectation = "Cowboy_Bebop/Cowboy_Bebop-E20.mkv"
+  bebop_data = {'anime': "Cowboy_Bebop",
+                'episode': "20",
+                'extension': "mkv"}
+  eq_(expectation,
+      filename_from_metadata(bebop_data))

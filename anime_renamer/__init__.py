@@ -1,19 +1,5 @@
-"""Anime Renamer
-
-Anime renamer will try to find the anime name and episode number in the given
-file. It will then rename / move the file. If you pass it a dest-folder
-it will move the file to the given folder using the name schema:
-
-<anime-name>_E<episode-number>.<extension>
-
-Usage:
-  anime-renamer <input_file> [<dest_folder>]
-
-
-"""
-
-from docopt import docopt
 import os.path
+import os
 import re
 
 class RuntimeError(Exception):
@@ -28,6 +14,7 @@ def extract_first(regex, string):
   else:
     return None
 
+
 def filter_out(string, * matchers):
   result = string
   for matcher in matchers:
@@ -37,6 +24,7 @@ def filter_out(string, * matchers):
     return None
   else:
     return result
+
 
 def extract_meta_data(filepath):
   filename = os.path.basename(filepath)
@@ -60,22 +48,29 @@ def extract_meta_data(filepath):
                      "^[_-]*",
                      "[_-]*$")
 
+  if anime is None:
+    raise RuntimeError("Can't extract anime name form filename: {}".format(filename))
+
   return {'anime': anime,
           'episode': episode,
           'extension': extension}
 
 
-def rename(filename, dest_folder):
-  if not os.path.exists(filename):
-    raise RuntimeError("file {} does not exist".format(filename))
+def filename_from_metadata(meta_data):
+  return "{anime}/{anime}-E{episode}.{extension}".format(**meta_data)
+
+
+def rename(filepath, dest_folder):
+  if not os.path.exists(filepath):
+    raise RuntimeError("file {} does not exist".format(filepath))
   if dest_folder and (not os.path.exists(dest_folder)):
     raise RuntimeError("destination folder {} does not exist".format(dest_folder))
 
+  if dest_folder is None:
+    dest_folder = os.path.dirname(filepath)
 
-if __name__ == "__main__":
-  dp.hello()
-  args = docopt(__doc__)
-  try:
-    rename(args['<input_file>'], args['<dest_folder>'])
-  except RuntimeError as e:
-    print "RuntimeError:", e
+  dest_filename = filename_from_metadata(extract_meta_data(filepath))
+  dest_path = os.path.join(dest_folder, dest_filename)
+  print "{} -> {}".format(filepath, dest_path)
+  #os.rename(filepath, dest_path)
+
