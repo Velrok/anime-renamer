@@ -56,11 +56,12 @@ def extract_meta_data(filepath):
 
   anime = filter_out(filename,
                      "(\[\w*\])",
+                     "('\w*')",
                      extension_pattern,
                      episode_pattern,
-                     #"[Rr]emastered",
+                     "[Rr]emastered",
                      "^[_-]*",
-                     "[_-]{2,}")
+                     "[_-]*$")
 
   return {'anime': anime,
           'episode': episode,
